@@ -35,12 +35,7 @@ from fastapi import FastAPI, Form
 import string
 from openai import OpenAI
 import os
-<<<<<<< HEAD
 from state import job_state
-=======
-from dotenv import load_dotenv
-load_dotenv
->>>>>>> d67a9de0e5c080a34a01d1c05fce618fc9e80b92
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
