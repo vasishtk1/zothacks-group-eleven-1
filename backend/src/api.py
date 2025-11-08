@@ -13,7 +13,7 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class jobDescription(BaseModel):
-    job_description = str
+    job_description: str
 
 @app.post("/job-description/")
 async def receive_description(job:jobDescription):
