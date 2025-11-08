@@ -32,6 +32,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 from pypdf import PdfReader
 from fastapi import FastAPI, Form
+import string
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
@@ -61,16 +62,17 @@ def normalize(resume_text: str, job_text: str) -> None:
 
 def find_key_words(path: str, job_text: str) -> None:
 
-    words_in_job_text = job_text.lower().replace('\n', ' ').split()
-    words_in_both = []
+    table = str.maketrans({ch: ' ' for ch in string.punctuation})
+    job_norm = ' ' + ' '.join(job_text.lower().replace('\n', ' ').translate(table).split()) + ' '
 
+    words_in_both = []
     with open(path, 'r') as file:
         lines = file.read().split('\n')
         for line in lines:
             keyword = line.strip().lower()
-            if keyword and keyword in words_in_job_text:
-                words_in_both.append(keyword)
-
+            kw = ' '.join(keyword.split())
+            if kw and f' {kw} ' in job_norm:
+                words_in_both.append(kw)
     return words_in_both
 
 
@@ -85,7 +87,7 @@ if __name__ == '__main__':
     print(df.sum(axis=1))
 
 
-    x = find_key_words = ('keywords.txt', job_text)
+    x = find_key_words('keywords.txt', job_text)
     print(x)
 
 
