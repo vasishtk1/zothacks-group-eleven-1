@@ -35,6 +35,8 @@ from fastapi import FastAPI, Form
 import string
 from openai import OpenAI
 import os
+from dotenv import load_dotenv
+load_dotenv
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
@@ -101,7 +103,9 @@ def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
     }
 
 
-client = OpenAI()
+if not os.getenv("OPENAI_API_KEY"):
+    raise RuntimeError("OPENAI_API_KEY not set. export OPENAI_API_KEY=... before running.")
+client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
 def build_suggestions_prompt(job_text: str,
                              resume_text: str,
                              present: list[str],
