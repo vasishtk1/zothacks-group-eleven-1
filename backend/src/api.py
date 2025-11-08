@@ -13,7 +13,11 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class jobDescription(BaseModel):
+<<<<<<< HEAD
     job_description: str
+=======
+    job_description = str
+>>>>>>> 8165cc48973d2074c8995588b7541f1d02924bac
 
 @app.post("/job-description/")
 async def receive_description(job:jobDescription):
