@@ -76,19 +76,45 @@ def find_key_words(path: str, job_text: str) -> None:
     return words_in_both
 
 
+def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
+    jd_hits = set(find_key_words(keywords_path, job_text))
+    resume_hits = set(find_key_words(keywords_path, resume_text))
+
+    present = sorted(jd_hits & resume_hits)     
+    missing = sorted(jd_hits - resume_hits)       
+    extra   = sorted(resume_hits - jd_hits)       
+
+    if jd_hits:
+        score = round(100 * len(present) / len(jd_hits))
+    else:
+        score = 0
+
+    return {
+        "jd_keywords_found": sorted(jd_hits),
+        "resume_keywords_found": sorted(resume_hits),
+        "present": present,
+        "missing": missing,
+        "extra": extra,
+        "match_score": score
+    }
+
 if __name__ == '__main__':
     job_text = """
     Looking for a Software Engineer Intern with Python, SQL, data analysis, REST APIs, Git, and Linux.
-    Experience with Pandas/Numpy preferred. Communication and teamwork are important.
+    Experience with Pandas/Numpy preferred. Communication and teamwork are important. development activities digital marketing
+    digital media distribution matrix mechanical engineering migration mobile modeling
     """
     resume_text = pdf_to_text('vk_main.pdf')
     df = normalize(resume_text,job_text)
-    print(df)
-    print(df.sum(axis=1))
+    # print(df)
+    # print(df.sum(axis=1))
 
 
-    x = find_key_words('keywords.txt', job_text)
-    print(x)
+    # finding the words common in between keywords file and job description
+    x = find_key_words('src/keywords.txt', job_text)
+    # print(x)
 
+    y = calculate_match_score('src/keywords.txt', job_text, resume_text)
+    print(y)
 
 
