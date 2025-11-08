@@ -5,6 +5,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import resumeLogo from "./assets/resumeLogo.svg"
 import RandomItem from "@/components/RandomItem";
+import React from "react";
 
 /*
 This is the starting point of our application. Here, we can begin coding 
@@ -48,6 +49,10 @@ function App() {
 		}
 	};
 
+	const ProgressBar = ({currentValue, maxValue = 100}) => {
+		<progress value={currentValue} max = {maxValue}></progress>
+	}
+
 	return (
 		<div className = "app-container">
 			<div>
@@ -72,6 +77,11 @@ function App() {
 				</form>
 				<p>{uploadStatus}</p>
 			</div>
+
+			<div className = "ScoreBar">
+
+			</div>
+
 		</div>
 	)}
 
