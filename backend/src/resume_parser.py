@@ -86,6 +86,7 @@ def build_suggestions_prompt(job_text: str,
     - Missing (in JD but not in resume): {', '.join(missing) or 'None'}
     - Extra (in resume but not JD): {', '.join(extra) or 'None'}
     TASK: 
+    - Tell the user the missing keywords that need to be added after commas
     - Give 4-5 targeted bullet suggestions to improve the resume for the job description.
     - For each suggestion, show an example edit/bullet that uses metrics or outcomes
     - Prioritize covering MISSING keywords naturally in the bullets
@@ -105,7 +106,6 @@ def chat_with_gpt(job_text: str,
             {"role": "user", "content": prompt}],
         temperature = 0.4
     )
-
     return response.choices[0].message.content
 
 if __name__ == '__main__':
