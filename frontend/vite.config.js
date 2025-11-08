@@ -11,7 +11,7 @@ export default defineConfig({
 		},
 	},
 	server: {
-		proxy: {
+	proxy: {
 			/*
 			This item adds what's known as a proxy from the frontend development server
 			to the backend development server. Vite will take any requests where the path
@@ -33,5 +33,5 @@ export default defineConfig({
 				rewrite: (path) => path.replace(/^\/api/, ""),
 			},
 		},
-	},
-});
+ 	},
+ });

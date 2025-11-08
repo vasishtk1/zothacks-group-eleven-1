@@ -3,7 +3,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-
+import resumeLogo from "./assets/resumeLogo.svg"
 import RandomItem from "@/components/RandomItem";
 
 /*
@@ -14,30 +14,65 @@ there are many ways to get your application up and running.
 With App.jsx, we can also define global variables and routes to store information as well as page navigation.
 */
 function App() {
-	const [count, setCount] = useState(0);
+	const [file, setFile] = useState(null); 
+	const [uploadStatus, setUploadStatus] = useState("");
+
+	const handleFileChange = (event) => {
+		setFile(event.target.files[0]);
+	};
+
+	const handleUpload = async (event) => {
+		event.preventDefault();
+		if (!file) {
+			alert("Please select a PDF file first!");
+			return;
+		}
+
+		const formData = new FormData();
+		formData.append("file", file);
+
+		try {
+			const response = await fetch("/api/upload", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) throw new Error("Upload failed");
+
+			const data = await response.json();
+			console.log("Upload success:", data);
+			setUploadStatus(`Uploaded ${data.filename} (${data.size} bytes)`);
+		} catch (error) {
+			console.error("Error uploading file:", error);
+			setUploadStatus("Error uploading file");
+		}
+	};
 
 	return (
-		<>
+		<div className = "app-container">
 			<div>
-				<a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank" rel="noreferrer">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
+				<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
 			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-				<p>
-					Edit <code>src/App.jsx</code> and save to test HMR
-				</p>
-
-				<RandomItem maximum={1000} />
+			<h1>ResuMatch</h1>
+			<p>
+				Welcome to ResuMatch, your AI-powered resume analyzer! <br />
+				Upload your resume as a PDF or DOCX, and we'll evaluate its effectiveness. <br />
+				Receive personalized feedback and actionable suggestions to enhance your resume, ensuring it stands out to potential employers. <br />
+				Start optimizing your career prospects with ResuMatch today!
+			</p>
+		
+			<div className="App">
+				<form>
+					<h2>Resume File Upload</h2>
+					<input 
+						type="file" 
+						accept=".pdf,.doc,.docx"
+						onChange={handleFileChange}/>
+					<button onClick={handleUpload} type="submit">Upload</button>
+				</form>
+				<p>{uploadStatus}</p>
 			</div>
-			<p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-		</>
-	);
-}
+		</div>
+	)}
 
 export default App;

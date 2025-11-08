@@ -6,7 +6,7 @@ $ fastapi dev src/api.py
 
 import random
 
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 
 # The app which manages all of the API routes
 app = FastAPI()
@@ -29,3 +29,11 @@ async def hello() -> dict[str, str]:
 async def get_random_item(maximum: int) -> dict[str, int]:
     """Get an item with a random ID."""
     return {"itemId": random.randint(0, maximum)}
+
+
+@app.post("/upload")
+async def upload_resume(file: UploadFile = File(...)):
+    """Receive a resume PDF upload."""
+    contents = await file.read()
+    # For now, just return a confirmation
+    return {"filename": file.filename, "size": len(contents)}
