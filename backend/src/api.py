@@ -9,6 +9,9 @@ import random
 from fastapi import FastAPI
 from pydantic import BaseModel
 from state import job_state
+from resume_parser import y, suggestions
+
+
 
 # The app which manages all of the API routes
 app = FastAPI()
@@ -19,7 +22,18 @@ class jobDescription(BaseModel):
 async def receive_description(job:jobDescription):
     job_state.job_text = job.job_description
     print("Received job description: ", job_state.job_text)
-    return {"message":"Job description received", "Job Description" : job_state.job_text}
+    return {"message":"Job description received"}
+
+
+class resumeResponse(BaseModel):
+    score: float = y
+    suggestions: str = suggestions
+# Sending match score and ChatGPT suggestions to frontend
+@app.get("/response")
+async def get_response(match_score:float, suggestions:str):
+    
+    return{"Score: ":match_score,"Suggestions: ":suggestions}
+
 
 # The decorator declares the function as a FastAPI route on the given path.
 # This route in particular is a GET route at "/hello" which returns the example
