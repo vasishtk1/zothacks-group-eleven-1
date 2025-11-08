@@ -8,22 +8,18 @@ import random
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+from state import job_state
 
 # The app which manages all of the API routes
 app = FastAPI()
 
 class jobDescription(BaseModel):
-<<<<<<< HEAD
     job_description: str
-=======
-    job_description = str
->>>>>>> 8165cc48973d2074c8995588b7541f1d02924bac
-
 @app.post("/job-description/")
 async def receive_description(job:jobDescription):
-    job_text = job.job_description
-    print("Received job description: ", job_text)
-    return {"message":"Job description received", "Job Description" : job_text}
+    job_state.job_text = job.job_description
+    print("Received job description: ", job_state.job_text)
+    return {"message":"Job description received", "Job Description" : job_state.job_text}
 
 # The decorator declares the function as a FastAPI route on the given path.
 # This route in particular is a GET route at "/hello" which returns the example

@@ -35,6 +35,7 @@ from fastapi import FastAPI, Form
 import string
 from openai import OpenAI
 import os
+from state import job_state
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
