@@ -1,33 +1,3 @@
-# from PyPDF2 import PdfReader
-# from pypdf import PdfReader
-# import docx
-# import os
-
-# def read_pdf(path: str) -> str:
-#     text = []
-#     with open(path, 'rb') as f:
-#         reader = PdfReader(f)
-#         for p in reader.pages:
-#             t = p.extract_text() or ''
-#             text.append(t)
-#     return '\n'.join(text)
-
-# def read_docx(path: str) -> str:
-#     d = docx.Document(path)
-#     return "\n".join(p.text for p in d.paragraphs)
-
-# def extract_text(path: str) -pip in> str:
-#     lower = path.lower()
-#     if lower.endswith(".pdf"):
-#         return read_pdf(path)
-#     elif lower.endswith(".docx"):
-#         return read_docx(path)
-#     else:
-#         raise ValueError("Unsupported file type (use PDF or DOCX).")
-    
-#---------------------------------------------------
-
-# import sklearn
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
 from pypdf import PdfReader
