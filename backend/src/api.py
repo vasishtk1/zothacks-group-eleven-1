@@ -9,7 +9,7 @@ import random,tempfile
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
 from state import job_state, resume_state
-from resume_parser import y, suggestions
+from resume_parser import returns_match_score_and_suggestions
 
 
 
@@ -28,7 +28,7 @@ async def receive_description(job:jobDescription):
 
 @app.get("/response")
 async def get_response():
-    
+    y, suggestions = returns_match_score_and_suggestions()
     return{"Score: ": y,
            "Suggestions: ": suggestions}
 

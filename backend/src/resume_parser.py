@@ -118,7 +118,7 @@ def chat_with_gpt(job_text: str,
     )
     return response.choices[0].message.content
 
-if __name__ == '__main__':
+def returns_match_score_and_suggestions():
     job_text = """
     Looking for a Software Engineer Intern with Python, SQL, data analysis, REST APIs, Git, and Linux.
     Experience with Pandas/Numpy preferred. Communication and teamwork are important. development activities digital marketing
@@ -136,10 +136,10 @@ if __name__ == '__main__':
     # print(x)
 
     y = calculate_match_score('src/keywords.txt', job_text, resume_text)['match_score']
-    print(y)
+    # print(y)
 
 
-    print('\n GPT Suggestions \n')
+    # print('\n GPT Suggestions \n')
     suggestions = chat_with_gpt(
         job_text=job_text,
         resume_text=resume_text,
@@ -148,5 +148,6 @@ if __name__ == '__main__':
         extra=y["extra"]
     )
 
-    print("\n Resume Improvement Suggestions \n")
-    print(suggestions)
+    return y, suggestions
+    # print("\n Resume Improvement Suggestions \n")
+    # print(suggestions)
