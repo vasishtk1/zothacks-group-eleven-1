@@ -140,14 +140,14 @@ if __name__ == '__main__':
     print(y)
 
 
-    # print('\n GPT Suggestions \n')
-    # suggestions = chat_with_gpt(
-    #     job_text=job_text,
-    #     resume_text=resume_text,
-    #     present=y["present"],
-    #     missing=y["missing"],
-    #     extra=y["extra"]
-    # )
+    print('\n GPT Suggestions \n')
+    suggestions = chat_with_gpt(
+        job_text=job_text,
+        resume_text=resume_text,
+        present=y["present"],
+        missing=y["missing"],
+        extra=y["extra"]
+    )
 
-    # print("\n Resume Improvement Suggestions \n")
-    # print(suggestions)
+    print("\n Resume Improvement Suggestions \n")
+    print(suggestions)
