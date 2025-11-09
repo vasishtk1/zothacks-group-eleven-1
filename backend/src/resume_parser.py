@@ -125,7 +125,6 @@ if __name__ == '__main__':
     digital media distribution matrix mechanical engineering migration mobile modeling
     """
     # resume_text = pdf_to_text('vk_main.pdf')
-    resume_state.filename = "vk_main.pdf"
     resume_text = pdf_to_text(resume_state.filename)
     df = normalize(resume_text,job_text)
     # print(df)

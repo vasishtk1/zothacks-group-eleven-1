@@ -4,7 +4,7 @@ To run this API, use the FastAPI CLI
 $ fastapi dev src/api.py
 """
 
-import random
+import random,tempfile
 
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
@@ -39,7 +39,11 @@ async def get_response():
 async def upload_resume(file: UploadFile = File(...)):
     """Receive a resume PDF upload."""
     contents = await file.read()
-    resume_state.resume_text = contents
-    resume_state.filename = file.filename
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        tmp.write(contents)
+        tmp_path = tmp.name
+    resume_state.filename=tmp_path
+    
     # For now, just return a confirmation
     return {"filename": file.filename, "size": len(contents)}
