@@ -215,3 +215,68 @@ form {
 	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+.loading-screen {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(255, 255, 255, 0.8);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	z-index: 9999;
+}
+/* --- Suggestions Markdown Styling --- */
+.suggestions-container {
+	max-width: 700px;
+	margin: 1.5rem auto;
+	padding: 1.5rem 2rem;
+	background-color: #f9fafc;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+	text-align: left;
+	line-height: 1.5;
+	font-size: 0.98rem;
+	color: #222;
+  }
+  
+  /* Prevent wide text from stretching */
+  .suggestions-container p,
+  .suggestions-container li {
+	margin-bottom: 0.4rem;
+	max-width: 100%;
+  }
+  
+  /* Compact bullet lists */
+  .suggestions-container ul,
+  .suggestions-container ol {
+	padding-left: 1.3rem;
+	margin-top: 0.2rem;
+	margin-bottom: 0.6rem;
+  }
+  
+  /* Slight indentation for nested examples */
+  .suggestions-container blockquote {
+	border-left: 3px solid #c43bad;
+	margin: 0.6rem 0;
+	padding-left: 0.8rem;
+	color: #444;
+	font-style: italic;
+  }
+  
+  /* Bold headings inside Markdown */
+  .suggestions-container strong {
+	color: #111;
+	font-weight: 600;
+  }
+  
+  /* Optional: make headers inside Markdown smaller */
+  .suggestions-container h3,
+  .suggestions-container h4 {
+	margin-top: 0.8rem;
+	font-size: 1rem;
+	color: #222;
+  }
+  

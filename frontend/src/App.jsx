@@ -85,21 +85,19 @@ function App() {
 	};
 	
 	if (load == true){
-		<div>
-				<div>
-					<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
-
-					<h1>ResuMatch</h1>
-				</div>
-				<div>
-					<h2>We are loading your resume compatibility score!</h2>
-					
-					<h2>loading...</h2>
-				</div>
-				
-
+		return(
+		<div className ="loading-screen">
+			<div>
+				<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
+				<h1>ResuMatch</h1>
 			</div>
-
+			<div>
+				<h2>We are loading your resume compatibility score!</h2>
+				
+				<h2>loading...</h2>
+			</div>
+		</div>
+		)
 	}
 	else if (toRender == false) {
 		return (
@@ -158,13 +156,14 @@ function App() {
 				<div>
 					<h2>Your match!</h2>
 					{progressBar({currentValue: matchScore, maxValue: 100 })}
-					<h2>Percent Score {matchScore}</h2>
+					<h2>Percent Score {matchScore}%</h2>
 				</div>
-				<div>
-					<h2>Our Suggestions for You:</h2>
+				<div className="suggestions-container">
+					<h2 style={{ textAlign: "center", marginBottom: "1rem" }}>
+						Our Suggestions for You:
+					</h2>
 					<Markdown>{suggestions}</Markdown>
 				</div>
-
 			</div>
 		)
 	};
