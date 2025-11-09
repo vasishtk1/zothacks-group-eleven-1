@@ -1,10 +1,7 @@
 import { useState } from "react";
 
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import resumeLogo from "./assets/resumeLogo.svg"
-import RandomItem from "@/components/RandomItem";
 import React from "react";
 
 /*
@@ -49,13 +46,17 @@ function App() {
 		}
 	};
 
-	// function fetchNumber = async () => {
-	// 	const = fetch
+	const fetchNumber = async () => {
+		const responseNum = await fetch ("/api/response");
+		if (!responseNum.ok){
+			throw new Error();
+		}
+		const resultNum = await responseNum.json();
+		return (resultNum)
+	}
 
-	// }
-
-	const ProgressBar = ({currentValue, maxValue = 100}) => {
-		<progress value={currentValue} max = {maxValue}></progress>
+	const progressBar = ({currentValue, maxValue = 100}) => {
+		return (<progress value={currentValue} max = {maxValue}></progress>)
 	}
 
 	return (
@@ -63,7 +64,9 @@ function App() {
 			<div>
 				<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
 			</div>
+
 			<h1>ResuMatch</h1>
+
 			<p>
 				Welcome to ResuMatch, your AI-powered resume analyzer! <br />
 				Upload your resume as a PDF or DOCX, and we'll evaluate its effectiveness. <br />
@@ -84,9 +87,9 @@ function App() {
 			</div>
 
 			<div className = "ScoreBar">
-
+				matchScore = {fetchNumber}
+				progressBar(matchScore)
 			</div>
-
 		</div>
 	)}
 
