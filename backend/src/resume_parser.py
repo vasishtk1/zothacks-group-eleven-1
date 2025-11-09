@@ -124,18 +124,18 @@ if __name__ == '__main__':
     x = find_key_words('src/keywords.txt', job_text)
     # print(x)
 
-    y = calculate_match_score('src/keywords.txt', job_text, resume_text)
+    y = calculate_match_score('src/keywords.txt', job_text, resume_text)['match_score']
     print(y)
 
 
-    print('\n GPT Suggestions \n')
-    suggestions = chat_with_gpt(
-        job_text=job_text,
-        resume_text=resume_text,
-        present=y["present"],
-        missing=y["missing"],
-        extra=y["extra"]
-    )
+    # print('\n GPT Suggestions \n')
+    # suggestions = chat_with_gpt(
+    #     job_text=job_text,
+    #     resume_text=resume_text,
+    #     present=y["present"],
+    #     missing=y["missing"],
+    #     extra=y["extra"]
+    # )
 
-    print("\n Resume Improvement Suggestions \n")
-    print(suggestions)
+    # print("\n Resume Improvement Suggestions \n")
+    # print(suggestions)
