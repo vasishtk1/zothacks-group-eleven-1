@@ -1,9 +1,7 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import "./App.css";
 import resumeLogo from "./assets/resumeLogo.svg"
-import React from "react";
-
 /*
 This is the starting point of our application. Here, we can begin coding 
 and transforming this page into whatever best suits our needs. 
@@ -14,83 +12,121 @@ With App.jsx, we can also define global variables and routes to store informatio
 function App() {
 	const [file, setFile] = useState(null); 
 	const [uploadStatus, setUploadStatus] = useState("");
+	const [textContent, setTextContent] = useState("");
+	const [matchScore, setScore] = useState(0)
+	const [suggestions, setSuggestions] = useState("")
+	const [toRender, setToRender] = useState(false)
 
 	const handleFileChange = (event) => {
-		setFile(event.target.files[0]);
+	setFile(event.target.files[0]);
 	};
 
-	const handleUpload = async (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
+	
 		if (!file) {
-			alert("Please select a PDF file first!");
+			alert("Please select a resume file first!");
 			return;
 		}
-
-		const formData = new FormData();
-		formData.append("file", file);
-
-		try {
-			const response = await fetch("/api/upload", {
-				method: "POST",
-				body: formData,
-			});
-
-			if (!response.ok) throw new Error("Upload failed");
-
-			const data = await response.json();
-			console.log("Upload success:", data);
-			setUploadStatus(`Uploaded ${data.filename} (${data.size} bytes)`);
-		} catch (error) {
-			console.error("Error uploading file:", error);
-			setUploadStatus("Error uploading file");
+	
+		if (!textContent.trim()) {
+			alert("Please enter a job description!");
+			return;
 		}
+	
+		const formData = new FormData();
+		formData.append("file", file, file.name);
+		formData.append("job_description", textContent);
+
+		for (const [k, v] of formData.entries()) {
+			console.log(k, v instanceof File ? v.name : v);
+		}
+
+		// console.log(file, textContent, formData)
+	
+	//	try {
+			// send both file and description to backend
+			// //const response = await fetch("/api/upload", {
+			// 	method: "POST",
+			// 	body: formData,
+			// });
+	
+	// 		if (!response.ok) throw new Error("Upload failed");
+	
+	// 		const data = await response.json();
+	// 		console.log("Upload success:", data);
+
+	// 		setScore(data["Score: "])
+	// 		setSuggestions(data["Suggestions: "])
+	// 		setToRender(true)
+	// 	} catch (error) {
+	// 		console.error("Error uploading:", error);
+	// 		setUploadStatus("Error uploading file or description");
+	// 	}
 	};
 
-	const fetchNumber = async () => {
-		const responseNum = await fetch ("/api/response");
-		if (!responseNum.ok){
-			throw new Error();
-		}
-		const resultNum = await responseNum.json();
-		return (resultNum)
-	}
-
 	const progressBar = ({currentValue, maxValue = 100}) => {
-		return (<progress value={currentValue} max = {maxValue}></progress>)
-	}
+		return (<progress value={currentValue} max = {maxValue}></progress>)}
 
-	return (
-		<div className = "app-container">
-			<div>
-				<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
-			</div>
 
-			<h1>ResuMatch</h1>
+	if (toRender == false) {
+		return (
+		<div>
+			<div className = "app-container">
+				<div>
+					<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
+				</div>
 
-			<p>
-				Welcome to ResuMatch, your AI-powered resume analyzer! <br />
-				Upload your resume as a PDF or DOCX, and we'll evaluate its effectiveness. <br />
-				Receive personalized feedback and actionable suggestions to enhance your resume, ensuring it stands out to potential employers. <br />
-				Start optimizing your career prospects with ResuMatch today!
-			</p>
-		
-			<div className="App">
-				<form>
-					<h2>Resume File Upload</h2>
-					<input 
-						type="file" 
-						accept=".pdf,.doc,.docx"
-						onChange={handleFileChange}/>
-					<button onClick={handleUpload} type="submit">Upload</button>
-				</form>
-				<p>{uploadStatus}</p>
-			</div>
+				<h1>ResuMatch</h1>
 
-			<div className = "ScoreBar">
-				matchScore = {fetchNumber}
-				progressBar(matchScore)
+				<p>
+					Welcome to ResuMatch, your AI-powered resume analyzer! <br />
+					Upload your resume as a PDF or DOCX along with the job description, and we'll evaluate its effectiveness. <br />
+					Receive personalized feedback and actionable suggestions to enhance your resume, ensuring it's compatibility for your employer! '. <br />
+					Start optimizing your career prospects with ResuMatch today!
+				</p>
+				
+				<div className="App">
+					{
+					<form onSubmit={handleSubmit}>
+						<h2>Enter Job Description</h2>
+							<div className="job-input">
+								<label htmlFor="job-description"></label>
+								<textarea
+									id="job-description"
+									value={textContent}
+									onChange={e => setTextContent(e.target.value)}
+								/>
+							</div>
+
+						<h2>Resume File Upload</h2>
+							<input
+								type="file"
+								accept=".pdf,.doc,.docx"
+								onChange={handleFileChange}
+							/>
+						<button type="submit">Analyze Resume</button>
+					</form>
+					}
+					<p>{uploadStatus}</p>
+				</div>
 			</div>
 		</div>
-	)}
+		)
+	} else if (toRender == true) {
+		return (
+			<div>
+				<div>
+					<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
+
+					<h1>ResuMatch</h1>
+				</div>
+				<div>
+					{progressBar({currentValue: matchScore, maxValue: 100 })}
+				</div>
+			</div>
+		)
+	};
+}
 
 export default App;
