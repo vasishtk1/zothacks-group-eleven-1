@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import "./App.css";
 import resumeLogo from "./assets/resumeLogo.svg"
+import Markdown from "react-markdown";
 /*
 This is the starting point of our application. Here, we can begin coding 
 and transforming this page into whatever best suits our needs. 
@@ -16,6 +17,7 @@ function App() {
 	const [matchScore, setScore] = useState(0)
 	const [suggestions, setSuggestions] = useState("")
 	const [toRender, setToRender] = useState(false)
+	const [load, setLoad] = useState(false)
 
 	const handleFileChange = (event) => {
 	setFile(event.target.files[0]);
@@ -38,38 +40,68 @@ function App() {
 		formData.append("file", file, file.name);
 		formData.append("job_description", textContent);
 
+
+
 		for (const [k, v] of formData.entries()) {
 			console.log(k, v instanceof File ? v.name : v);
 		}
 
-		// console.log(file, textContent, formData)
+		console.log(file, textContent, formData)
 	
-	//	try {
-			// send both file and description to backend
-			// //const response = await fetch("/api/upload", {
-			// 	method: "POST",
-			// 	body: formData,
-			// });
-	
-	// 		if (!response.ok) throw new Error("Upload failed");
-	
-	// 		const data = await response.json();
-	// 		console.log("Upload success:", data);
+		try {
+			setLoad(true)
 
-	// 		setScore(data["Score: "])
-	// 		setSuggestions(data["Suggestions: "])
-	// 		setToRender(true)
-	// 	} catch (error) {
-	// 		console.error("Error uploading:", error);
-	// 		setUploadStatus("Error uploading file or description");
-	// 	}
+			//asend both file and description to backend
+			const response = await fetch("/api/upload", {
+				method: "POST",
+				body: formData,
+			});
+			setLoad(false)
+	
+			if (!response.ok) throw new Error("Upload failed");
+	
+			const data = await response.json();
+			console.log("Upload success:", data);
+
+			setScore(data["Score: "])
+			setSuggestions(data["Suggestions: "])
+			setToRender(true)
+		} catch (error) {
+			console.error("Error uploading:", error);
+			setUploadStatus("Error uploading file or description");
+		}
 	};
 
-	const progressBar = ({currentValue, maxValue = 100}) => {
-		return (<progress value={currentValue} max = {maxValue}></progress>)}
+	const progressBar = ({ currentValue, maxValue = 100 }) => {
+		const percent = Math.min((currentValue / maxValue) * 100, 100);
+	
+		return (
+			<div className="progress-container">
+				<div className="progress-bar" style={{ width: `${percent}%` }}>
+					<span className="progress-text">{Math.round(percent)}%</span>
+				</div>
+			</div>
+		);
+	};
+	
+	if (load == true){
+		<div>
+				<div>
+					<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
 
+					<h1>ResuMatch</h1>
+				</div>
+				<div>
+					<h2>We are loading your resume compatibility score!</h2>
+					
+					<h2>loading...</h2>
+				</div>
+				
 
-	if (toRender == false) {
+			</div>
+
+	}
+	else if (toRender == false) {
 		return (
 		<div>
 			<div className = "app-container">
@@ -113,7 +145,9 @@ function App() {
 			</div>
 		</div>
 		)
-	} else if (toRender == true) {
+	} 
+	
+	else if (toRender == true) {
 		return (
 			<div>
 				<div>
@@ -122,8 +156,15 @@ function App() {
 					<h1>ResuMatch</h1>
 				</div>
 				<div>
+					<h2>Your match!</h2>
 					{progressBar({currentValue: matchScore, maxValue: 100 })}
+					<h2>Percent Score {matchScore}</h2>
 				</div>
+				<div>
+					<h2>Our Suggestions for You:</h2>
+					<Markdown>{suggestions}</Markdown>
+				</div>
+
 			</div>
 		)
 	};
