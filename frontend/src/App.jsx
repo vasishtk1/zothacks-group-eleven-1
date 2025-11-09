@@ -49,6 +49,11 @@ function App() {
 		}
 	};
 
+	// function fetchNumber = async () => {
+	// 	const = fetch
+
+	// }
+
 	const ProgressBar = ({currentValue, maxValue = 100}) => {
 		<progress value={currentValue} max = {maxValue}></progress>
 	}
