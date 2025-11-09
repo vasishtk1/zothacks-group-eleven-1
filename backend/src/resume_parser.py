@@ -5,7 +5,7 @@ from fastapi import FastAPI, Form
 import string
 from openai import OpenAI
 import os
-from state import job_state
+from state import job_state, resume_state
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
@@ -62,6 +62,16 @@ def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
     else:
         score = 0
 
+    #-------------------------
+    #Semantic Similarity for synonyms
+    # resume_doc = nlp
+    # present = []   
+    # missing = []       
+    # extra   = []
+    # for jd_keyword in jd_hits:
+
+
+
     return {
         "jd_keywords_found": sorted(jd_hits),
         "resume_keywords_found": sorted(resume_hits),
@@ -114,7 +124,9 @@ if __name__ == '__main__':
     Experience with Pandas/Numpy preferred. Communication and teamwork are important. development activities digital marketing
     digital media distribution matrix mechanical engineering migration mobile modeling
     """
-    resume_text = pdf_to_text('vk_main.pdf')
+    # resume_text = pdf_to_text('vk_main.pdf')
+    resume_state.filename = "vk_main.pdf"
+    resume_text = pdf_to_text(resume_state.filename)
     df = normalize(resume_text,job_text)
     # print(df)
     # print(df.sum(axis=1))

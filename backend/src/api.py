@@ -8,7 +8,7 @@ import random
 
 from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
-from state import job_state
+from state import job_state, resume_state
 from resume_parser import y, suggestions
 
 
@@ -32,9 +32,14 @@ async def get_response():
     return{"Score: ": y,
            "Suggestions: ": suggestions}
 
+
+
+#Receives and saves filename and data from frontend
 @app.post("/upload")
 async def upload_resume(file: UploadFile = File(...)):
     """Receive a resume PDF upload."""
     contents = await file.read()
+    resume_state.resume_text = contents
+    resume_state.filename = file.filename
     # For now, just return a confirmation
     return {"filename": file.filename, "size": len(contents)}
