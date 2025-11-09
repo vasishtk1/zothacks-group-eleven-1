@@ -7,14 +7,6 @@ from openai import OpenAI
 import os
 from state import job_state, resume_state
 
-try:
-    nlp = spacy.load("en_core_web_md")
-except OSError:
-    import subprocess, sys
-    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_md"])
-    nlp = spacy.load("en_core_web_md")
-
-
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
 
@@ -64,44 +56,23 @@ def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
     present = sorted(jd_hits & resume_hits)     
     missing = sorted(jd_hits - resume_hits)       
     extra   = sorted(resume_hits - jd_hits)       
-
-    
-
-    #-------------------------
-    resume_doc = nlp(resume_text)
-    semantic_present = []
-    semantic_missing = []
-
-    for keyword in missing:
-        keyword_doc = nlp(keyword)
-        if resume_doc.similarity(keyword_doc) > 0.75:
-            semantic_present.append(keyword)
-        else:
-            semantic_missing.append(keyword)
-
-    # Merge exact present with semantic matches
-    final_present = present.copy()  # start with exact matches
-
-    # Only add semantically matched keywords if they aren’t already counted
-    for kw in semantic_present:
-        if kw not in final_present:
-            final_present.append(kw)
-    final_missing = semantic_missing
     if jd_hits:
-        score = round(100 * len(final_present) / len(jd_hits))
+        score = round(100 * len(present) / len(jd_hits))
     else:
         score = 0
     return {
         "jd_keywords_found": sorted(jd_hits),
         "resume_keywords_found": sorted(resume_hits),
-        "present": final_present,
-        "missing": final_missing,
+        "present": present,
+        "missing": missing,
         "extra": extra,
         "match_score": score
     }
 
 
-client = OpenAI()
+api_key = os.environ.get("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
 def build_suggestions_prompt(job_text: str,
                              resume_text: str,
                              present: list[str],
