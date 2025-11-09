@@ -101,7 +101,6 @@ function App() {
 	}
 	else if (toRender == false) {
 		return (
-		<div>
 			<div className = "app-container">
 				<div>
 					<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
@@ -141,13 +140,12 @@ function App() {
 					<p>{uploadStatus}</p>
 				</div>
 			</div>
-		</div>
 		)
 	} 
 	
 	else if (toRender == true) {
 		return (
-			<div>
+			<div className = "app-container">
 				<div>
 					<img src ={resumeLogo} className="logo resume" alt="Resume logo" />
 
