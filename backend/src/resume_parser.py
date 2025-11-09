@@ -6,6 +6,7 @@ import string
 from openai import OpenAI
 import os
 from state import job_state, resume_state
+from dotenv import load_dotenv
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
@@ -70,9 +71,10 @@ def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
     }
 
 
-api_key = os.environ.get("OPENAI_API_KEY")
-
-client = OpenAI(api_key=api_key)
+load_dotenv()
+client = OpenAI(
+  api_key=os.getenv("API_KEY")
+)
 def build_suggestions_prompt(job_text: str,
                              resume_text: str,
                              present: list[str],
@@ -151,8 +153,8 @@ if __name__ == '__main__':
     digital media distribution matrix mechanical engineering migration mobile modeling
     """
     job_text = job_state.job_text
-    # resume_text = pdf_to_text('vk_main.pdf')
-    resume_text = pdf_to_text(resume_state.filename)
+    resume_text = pdf_to_text('vk_main.pdf')
+    #resume_text = pdf_to_text(resume_state.filename)
     df = normalize(resume_text,job_text)
     # print(df)
     # print(df.sum(axis=1))
@@ -170,7 +172,7 @@ if __name__ == '__main__':
     print('\n GPT Suggestions \n')
     suggestions = chat_with_gpt(
         job_text=job_text,
-        resume_text=resume_text,
+        resume_text=resume_text[:2000],
         present=temp["present"],
         missing=temp["missing"],
         extra=temp["extra"]
