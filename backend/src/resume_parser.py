@@ -5,7 +5,7 @@ from fastapi import FastAPI, Form
 import string
 from openai import OpenAI
 import os
-from state import job_state
+from state import job_state, resume_state
 
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
@@ -62,6 +62,16 @@ def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
     else:
         score = 0
 
+    #-------------------------
+    #Semantic Similarity for synonyms
+    # resume_doc = nlp
+    # present = []   
+    # missing = []       
+    # extra   = []
+    # for jd_keyword in jd_hits:
+
+
+
     return {
         "jd_keywords_found": sorted(jd_hits),
         "resume_keywords_found": sorted(resume_hits),
@@ -108,13 +118,15 @@ def chat_with_gpt(job_text: str,
     )
     return response.choices[0].message.content
 
-if __name__ == '__main__':
+def returns_match_score_and_suggestions():
     job_text = """
     Looking for a Software Engineer Intern with Python, SQL, data analysis, REST APIs, Git, and Linux.
     Experience with Pandas/Numpy preferred. Communication and teamwork are important. development activities digital marketing
     digital media distribution matrix mechanical engineering migration mobile modeling
     """
-    resume_text = pdf_to_text('vk_main.pdf')
+    job_text = job_state.job_text
+    # resume_text = pdf_to_text('vk_main.pdf')
+    resume_text = pdf_to_text(resume_state.filename)
     df = normalize(resume_text,job_text)
     # print(df)
     # print(df.sum(axis=1))
@@ -125,17 +137,18 @@ if __name__ == '__main__':
     # print(x)
 
     y = calculate_match_score('src/keywords.txt', job_text, resume_text)['match_score']
-    print(y)
+    # print(y)
 
 
     # print('\n GPT Suggestions \n')
-    # suggestions = chat_with_gpt(
-    #     job_text=job_text,
-    #     resume_text=resume_text,
-    #     present=y["present"],
-    #     missing=y["missing"],
-    #     extra=y["extra"]
-    # )
+    suggestions = chat_with_gpt(
+        job_text=job_text,
+        resume_text=resume_text,
+        present=y["present"],
+        missing=y["missing"],
+        extra=y["extra"]
+    )
 
+    return y, suggestions
     # print("\n Resume Improvement Suggestions \n")
     # print(suggestions)
