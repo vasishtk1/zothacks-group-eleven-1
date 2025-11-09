@@ -18,7 +18,7 @@ app = FastAPI()
 
 class jobDescription(BaseModel):
     job_description: str
-@app.post("/job-description/")
+@app.post("/job-description")
 async def receive_description(job:jobDescription):
     job_state.job_text = job.job_description
     print("Received job description: ", job_state.job_text)
