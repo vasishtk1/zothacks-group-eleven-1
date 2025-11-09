@@ -124,6 +124,7 @@ def returns_match_score_and_suggestions():
     Experience with Pandas/Numpy preferred. Communication and teamwork are important. development activities digital marketing
     digital media distribution matrix mechanical engineering migration mobile modeling
     """
+    job_text = job_state.job_text
     # resume_text = pdf_to_text('vk_main.pdf')
     resume_text = pdf_to_text(resume_state.filename)
     df = normalize(resume_text,job_text)
