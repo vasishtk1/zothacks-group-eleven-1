@@ -33,9 +33,9 @@ class jobDescription(BaseModel):
 
 
 
-#Receives and saves filename and data from frontend
+#Receives and saves file and job description text
 @app.post("/upload")
-async def upload_resume(file: UploadFile = File(...),job_description: str = Form(...)):
+async def upload_resume(file: UploadFile = File(...), job_description: str = Form(...)):
     job_state.job_text = job_description
     """Receive a resume PDF upload."""
     contents = await file.read()
