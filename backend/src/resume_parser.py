@@ -7,6 +7,14 @@ from openai import OpenAI
 import os
 from state import job_state, resume_state
 
+try:
+    nlp = spacy.load("en_core_web_md")
+except OSError:
+    import subprocess, sys
+    subprocess.run([sys.executable, "-m", "spacy", "download", "en_core_web_md"])
+    nlp = spacy.load("en_core_web_md")
+
+
 def pdf_to_text(path: str) -> str:
     reader = PdfReader(path)
 
@@ -57,26 +65,37 @@ def calculate_match_score(keywords_path: str, job_text: str, resume_text: str):
     missing = sorted(jd_hits - resume_hits)       
     extra   = sorted(resume_hits - jd_hits)       
 
-    if jd_hits:
-        score = round(100 * len(present) / len(jd_hits))
-    else:
-        score = 0
+    
 
     #-------------------------
-    #Semantic Similarity for synonyms
-    # resume_doc = nlp
-    # present = []   
-    # missing = []       
-    # extra   = []
-    # for jd_keyword in jd_hits:
+    resume_doc = nlp(resume_text)
+    semantic_present = []
+    semantic_missing = []
 
+    for keyword in missing:
+        keyword_doc = nlp(keyword)
+        if resume_doc.similarity(keyword_doc) > 0.75:
+            semantic_present.append(keyword)
+        else:
+            semantic_missing.append(keyword)
 
+    # Merge exact present with semantic matches
+    final_present = present.copy()  # start with exact matches
 
+    # Only add semantically matched keywords if they aren’t already counted
+    for kw in semantic_present:
+        if kw not in final_present:
+            final_present.append(kw)
+    final_missing = semantic_missing
+    if jd_hits:
+        score = round(100 * len(final_present) / len(jd_hits))
+    else:
+        score = 0
     return {
         "jd_keywords_found": sorted(jd_hits),
         "resume_keywords_found": sorted(resume_hits),
-        "present": present,
-        "missing": missing,
+        "present": final_present,
+        "missing": final_missing,
         "extra": extra,
         "match_score": score
     }
@@ -137,6 +156,7 @@ def returns_match_score_and_suggestions():
     # print(x)
 
     y = calculate_match_score('src/keywords.txt', job_text, resume_text)['match_score']
+    temp = calculate_match_score('src/keywords.txt', job_text, resume_text)
     # print(y)
 
 
@@ -144,9 +164,9 @@ def returns_match_score_and_suggestions():
     suggestions = chat_with_gpt(
         job_text=job_text,
         resume_text=resume_text,
-        present=y["present"],
-        missing=y["missing"],
-        extra=y["extra"]
+        present=temp["present"],
+        missing=temp["missing"],
+        extra=temp["extra"]
     )
 
     return y, suggestions
