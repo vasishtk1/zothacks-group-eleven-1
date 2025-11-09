@@ -143,3 +143,38 @@ def returns_match_score_and_suggestions():
     return y, suggestions
     # print("\n Resume Improvement Suggestions \n")
     # print(suggestions)
+
+if __name__ == '__main__':
+    job_text = """
+    Looking for a Software Engineer Intern with Python, SQL, data analysis, REST APIs, Git, and Linux.
+    Experience with Pandas/Numpy preferred. Communication and teamwork are important. development activities digital marketing
+    digital media distribution matrix mechanical engineering migration mobile modeling
+    """
+    job_text = job_state.job_text
+    # resume_text = pdf_to_text('vk_main.pdf')
+    resume_text = pdf_to_text(resume_state.filename)
+    df = normalize(resume_text,job_text)
+    # print(df)
+    # print(df.sum(axis=1))
+
+
+    # finding the words common in between keywords file and job description
+    x = find_key_words('src/keywords.txt', job_text)
+    # print(x)
+
+    y = calculate_match_score('src/keywords.txt', job_text, resume_text)['match_score']
+    temp = calculate_match_score('src/keywords.txt', job_text, resume_text)
+    print(y)
+
+
+    print('\n GPT Suggestions \n')
+    suggestions = chat_with_gpt(
+        job_text=job_text,
+        resume_text=resume_text,
+        present=temp["present"],
+        missing=temp["missing"],
+        extra=temp["extra"]
+    )
+    print("\n Resume Improvement Suggestions \n")
+    print(suggestions)
+
